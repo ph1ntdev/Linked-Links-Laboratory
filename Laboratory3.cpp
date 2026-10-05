@@ -42,6 +42,13 @@ class SinglyList {
                 cur = cur->next;
             }
         }
+
+        void insertAfter(Node* node, int value) {
+            if (node == nullptr) return;
+            Node* newNode = new Node(value);
+            newNode->next = node->next;
+            node->next = newNode;
+        }
 };
 
 
