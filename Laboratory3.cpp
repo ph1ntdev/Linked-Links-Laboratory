@@ -19,6 +19,7 @@ class SinglyList {
 
     public:
         SinglyList(): head(nullptr) {}
+
         ~SinglyList() {
             Node* cur = head;
             while (cur != nullptr) {
@@ -26,6 +27,12 @@ class SinglyList {
                 delete cur;
                 cur = nextNode;
             }
+        }
+
+        void pushFront(int value) {
+            Node* newNode = new Node(value);
+            newNode->next = head;
+            head = newNode;
         }
 };
 
