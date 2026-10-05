@@ -49,18 +49,25 @@ class SinglyList {
             newNode->next = node->next;
             node->next = newNode;
         }
+
+        Node* findNode(int index) const {
+            if (index < 0) return nullptr;
+
+            int count = 0;
+            Node* cur = head;
+
+            while (cur != nullptr && count < index) {
+                cur = cur->next;
+                count++;
+            }
+            return cur;
+        }
 };
 
 
 int main() {
 
-    SinglyList list;
 
-    list.print();
-    list.pushFront(1);
-    list.pushFront(2);
-    list.pushFront(3);
-    list.print();
 
     return 0;
 }
