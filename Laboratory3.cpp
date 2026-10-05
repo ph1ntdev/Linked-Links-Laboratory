@@ -17,6 +17,14 @@ class SinglyList {
     private:
         Node* head;
 
+        Node* findPrevNode(Node* node) const {
+            Node* prevNode = head;
+            while (prevNode != nullptr && prevNode->next != node) {
+                prevNode = prevNode->next;
+            }
+            return prevNode;
+        }
+
     public:
         SinglyList(): head(nullptr) {}
 
@@ -61,6 +69,20 @@ class SinglyList {
                 count++;
             }
             return cur;
+        }
+
+        void insertBefore(Node* node, int value) {
+            if (node == nullptr) return;
+            if (node == head) {
+                pushFront(value);
+                return;
+            }
+            Node* prev = findPrevNode(node);
+            if (prev == nullptr) return;
+
+            Node* newNode = new Node(value);
+            newNode->next = node;
+            prev->next = newNode;
         }
 };
 
