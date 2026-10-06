@@ -1,8 +1,14 @@
 #include <iostream>
+#include <chrono>
+#include <random>
+#include <vector>
+
+using Clock = std::chrono::steady_clock;
 
 /* --------------------------------------------- */
 
-
+/*
+ */
 
 /* --------------------------------------------- */
 
@@ -86,6 +92,43 @@ class SinglyList {
         }
 };
 
+void fillRandom(SinglyList& list, int n, std::mt19937& gen) {
+    for (int i = 0; i < n; i++) {
+        list.pushFront(static_cast<int>(gen()));
+    }
+}
+
+double benchInsertBefore(int n, int k, std::mt19937& gen){
+    SinglyList benchList;
+    fillRandom(benchList, n, gen);
+    auto target = benchList.findNode(n-1);
+
+    auto start = Clock::now();
+
+    for (int i = 0; i < k; i++) {
+        benchList.insertBefore(target, 100);
+    }
+
+    auto end = Clock::now();
+    double ns = std::chrono::duration<double, std::nano>(end - start).count();
+    return ns/k;
+}
+
+double benchInsertAfter(int n, int k, std::mt19937& gen) {
+    SinglyList benchList;
+    fillRandom(benchList, n, gen);
+    auto target = benchList.findNode(n-1);
+
+    auto start = Clock::now();
+
+    for (int i = 0; i < k; i++) {
+        benchList.insertAfter(target, 100);
+    }
+
+    auto end = Clock::now();
+    double ns = std::chrono::duration<double, std::nano>(end - start).count();
+    return ns/k;
+}
 
 int main() {
 
