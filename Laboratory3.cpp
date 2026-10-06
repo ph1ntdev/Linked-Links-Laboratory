@@ -1,4 +1,6 @@
 #include <fstream>
+#include <iomanip>
+#include <ios>
 #include <iostream>
 #include <chrono>
 #include <random>
@@ -106,7 +108,7 @@ void fillRandom(SinglyList& list, int n, std::mt19937& gen) {
 double benchInsertBefore(int n, int k, std::mt19937& gen){
     SinglyList benchList;
     fillRandom(benchList, n, gen);
-    auto target = benchList.findNode(0);
+    auto target = benchList.findNode(n - 1); // Здесь
 
     auto start = Clock::now();
 
@@ -122,7 +124,7 @@ double benchInsertBefore(int n, int k, std::mt19937& gen){
 double benchInsertAfter(int n, int k, std::mt19937& gen) {
     SinglyList benchList;
     fillRandom(benchList, n, gen);
-    auto target = benchList.findNode(0);
+    auto target = benchList.findNode(n - 1); // Здесь
 
     auto start = Clock::now();
 
@@ -141,6 +143,7 @@ int main() {
     std::ofstream file("result.csv");
     if (file.is_open()) {
         int size[5] = {100, 1000, 10000, 100000, 1000000};
+        file << std::fixed << std::setprecision(1);
         file << "n,after_ns,before_ns\n";
         for (int i = 0; i < 5; i++) {
             double iBefore = 0;
@@ -148,7 +151,7 @@ int main() {
 
             for (int j = 0; j < 5; j++) {
                 iAfter += benchInsertAfter(size[i], 1000, gen);
-                iBefore += benchInsertBefore(size[i], 1000, gen);
+                iBefore += benchInsertBefore(size[i], std::min(1000, size[i]/5), gen);
             }
 
             file << size[i] << ',' << iAfter / 5 << ',' << iBefore / 5 << '\n';
