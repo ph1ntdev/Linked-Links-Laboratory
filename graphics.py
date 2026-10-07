@@ -36,14 +36,19 @@ def plot_single(table, column, label, color, marker, filename):
     return fig
 
 
-def plot_both(table, filename):
+def plot_both(table, filename, ylim=None, linear=False):
     fig, ax = plt.subplots(figsize=(7, 4.5))
     ax.plot(table["n"], table["after_ns"], marker="o", color="tab:blue",
             label="insertAfter")
     ax.plot(table["n"], table["before_ns"], marker="s", color="tab:red",
             label="insertBefore")
     ax.set_xscale("log")
-    ax.set_yscale("log")
+    if not linear:
+        ax.set_yscale("log")
+    if ylim:
+        ax.set_ylim(ylim)
+    elif linear:
+        ax.set_ylim(bottom=0)
     ax.set_xlabel("Размер списка n")
     ax.set_ylabel("Время одной вставки, нс")
     ax.grid(True, which="both")
@@ -55,17 +60,27 @@ def plot_both(table, filename):
 
 def main():
     parser = argparse.ArgumentParser(description="Графики по avg.csv")
-    parser.add_argument("folder", nargs="?", help="папка с avg.csv (например, best или worse)")
-    parser.add_argument("--show", action="store_true", help="показать графики на экране")
+    parser.add_argument("folder", nargs="?",
+                        help="папка с avg.csv (например, best или worse)")
+    parser.add_argument("--show", action="store_true",
+                        help="показать графики на экране")
+    parser.add_argument("--ylim", nargs=2, type=float, metavar=("LOW", "HIGH"),
+                        help="границы оси Y для общего графика graph_both.png")
+    parser.add_argument("--linear", action="store_true",
+                        help="общий график с линейной осью Y (X остаётся логарифмической)")
     args = parser.parse_args()
 
     folder = args.folder or input("Папка с avg.csv (best / worse): ").strip()
     table = load_table(folder)
 
     out = lambda name: os.path.join(folder, name)
-    plot_single(table, "after_ns", "insertAfter", "tab:blue", "o", out("graph_after.png"))
-    plot_single(table, "before_ns", "insertBefore", "tab:red", "s", out("graph_before.png"))
-    plot_both(table, out("graph_both.png"))
+    plot_single(table, "after_ns", "insertAfter", "tab:blue", "o",
+                out("graph_after.png"))
+    plot_single(table, "before_ns", "insertBefore", "tab:red", "s",
+                out("graph_before.png"))
+    plot_both(table, out("graph_both.png"),
+              ylim=tuple(args.ylim) if args.ylim else None,
+              linear=args.linear)
 
     print(f"Готово. Графики сохранены в папку {folder}:")
     print("  graph_after.png, graph_before.png, graph_both.png")

@@ -108,11 +108,12 @@ void fillRandom(SinglyList& list, int n, std::mt19937& gen) {
 double benchInsertBefore(int n, int k, std::mt19937& gen){
     SinglyList benchList;
     fillRandom(benchList, n, gen);
-    auto target = benchList.findNode(n - 1); // Здесь
+    auto target = benchList.findNode(0); // Здесь
 
     auto start = Clock::now();
 
     for (int i = 0; i < k; i++) {
+        target = benchList.findNode(0); // В лучшем случае нужно раскоментировать эту строчку
         benchList.insertBefore(target, 100);
     }
 
@@ -124,7 +125,7 @@ double benchInsertBefore(int n, int k, std::mt19937& gen){
 double benchInsertAfter(int n, int k, std::mt19937& gen) {
     SinglyList benchList;
     fillRandom(benchList, n, gen);
-    auto target = benchList.findNode(n - 1); // Здесь
+    auto target = benchList.findNode(0); // Здесь
 
     auto start = Clock::now();
 
@@ -151,7 +152,7 @@ int main() {
 
             for (int j = 0; j < 5; j++) {
                 iAfter += benchInsertAfter(size[i], 1000, gen);
-                iBefore += benchInsertBefore(size[i], std::min(1000, size[i]/5), gen);
+                iBefore += benchInsertBefore(size[i], std::min(1000, size[i]/10), gen); // для лучшего поставить k = 1000, для худшего size[i]/10
             }
 
             file << size[i] << ',' << iAfter / 5 << ',' << iBefore / 5 << '\n';
